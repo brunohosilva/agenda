@@ -17,6 +17,7 @@ class MySchedulesViewController: UIViewController, UITableViewDelegate {
     //--------------------------------------------------------
     
     private let detailTapRelay = PublishRelay<ScheduleModel>()
+    private let editTapRelay = PublishRelay<ScheduleModel>()
     private let deleteTapRelay = PublishRelay<ScheduleModel>()
     private let disposeBag = DisposeBag()
     
@@ -47,18 +48,18 @@ class MySchedulesViewController: UIViewController, UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
         let schedule = viewModel.currentItems[indexPath.row]
-        let detailAction = UIContextualAction(style: .normal, title: "Detalhes") { [weak self] _, _, completion in
-            self?.detailTapRelay.accept(schedule)
+        let editAction = UIContextualAction(style: .normal, title: "Editar") { [weak self] _, _, completion in
+            self?.editTapRelay.accept(schedule)
             completion(true)
         }
-        detailAction.backgroundColor = .systemBlue
+        editAction.backgroundColor = .systemBlue
 
         let deleteAction = UIContextualAction(style: .destructive, title: "Apagar") { [weak self] _, _, completion in
             self?.deleteTapRelay.accept(schedule)
             completion(true)
         }
         
-        let config = UISwipeActionsConfiguration(actions: [deleteAction, detailAction])
+        let config = UISwipeActionsConfiguration(actions: [deleteAction, editAction])
         config.performsFirstActionWithFullSwipe = false
         return config
     }
@@ -95,11 +96,22 @@ class MySchedulesViewController: UIViewController, UITableViewDelegate {
             .bind(to: detailTapBinder)
             .disposed(by: disposeBag)
         
+        editTapRelay
+            .bind(to: editTapBinder)
+            .disposed(by: disposeBag)
+        
         deleteTapRelay
             .bind(to: deleteTapBinder)
             .disposed(by: disposeBag)
     }
     
+    private var detailTapBinder: Binder<ScheduleModel> {
+        Binder(self) { target, scheduleData in
+            let scheduleDialogDetailsVC = ScheduleDetailsDialogViewController(schedule: scheduleData)
+            target.present(scheduleDialogDetailsVC, animated: true)
+        }
+    }
+
     private var addButtonBinder: Binder<Void> {
         Binder(self) { target, _ in
             let addScheduleVC = AddOrEditScheduleViewController(viewModel: target.viewModel)
@@ -108,7 +120,7 @@ class MySchedulesViewController: UIViewController, UITableViewDelegate {
         }
     }
     
-    private var detailTapBinder: Binder<ScheduleModel> {
+    private var editTapBinder: Binder<ScheduleModel> {
         Binder(self) { target, scheduleData in
             let editVC = AddOrEditScheduleViewController(viewModel: target.viewModel, editingItem: scheduleData)
             let navigationVC = UINavigationController(rootViewController: editVC)
