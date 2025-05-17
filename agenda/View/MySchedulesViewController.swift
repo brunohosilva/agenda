@@ -115,7 +115,7 @@ class MySchedulesViewController: UIViewController, UITableViewDelegate {
     
     private var deleteTapBinder: Binder<ScheduleModel> {
         Binder(self) { target, scheduleData in
-            print("deletar item: \(scheduleData)")
+            target.viewModel.removeSchedule(item: scheduleData)
         }
     }
 }

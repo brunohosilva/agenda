@@ -32,4 +32,11 @@ final class ScheduleViewModel {
         scheduleItems.accept(currentItems)
         storage.save(currentItems)
     }
+    
+    func removeSchedule(item: ScheduleModel) {
+        var current = scheduleItems.value
+        current.removeAll { $0.id == item.id }
+        scheduleItems.accept(current)
+        storage.save(current)
+    }
 }
