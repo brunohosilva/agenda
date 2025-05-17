@@ -12,18 +12,23 @@ import SnapKit
 
 class ViewController: UIViewController {
     
+    private let addButton = UIBarButtonItem(barButtonSystemItem: .add, target: nil, action: nil)
     private let tableView = UITableView()
     private let disposeBag = DisposeBag()
     private let viewModel = ScheduleViewModel()
     
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         setupUI()
-        bindTableView()
+        bind()
     }
     
     private func setupUI() {
-        title = "Agenda"
+        
+        title = "Minha agenda"
+        navigationItem.rightBarButtonItem = addButton
+        
         view.backgroundColor = .white
         view.addSubview(tableView)
         
@@ -34,7 +39,13 @@ class ViewController: UIViewController {
         }
     }
     
-    private func bindTableView() {
+    private func bind() {
+        
+        addButton.rx.tap
+            .bind { [weak self] in
+                print("Botão + clicado via Rx")
+            }
+            .disposed(by: disposeBag)
         
         viewModel.scheduleItems
             .bind(to: tableView.rx.items(cellIdentifier: "Cell")) { row, scheduleData, cell in
