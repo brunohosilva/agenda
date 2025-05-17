@@ -8,7 +8,7 @@
 import Foundation
 
 struct ScheduleModel: Codable {
-    var id: Int
+    var id: UUID
     var title: String
     var description: String
     var date: String

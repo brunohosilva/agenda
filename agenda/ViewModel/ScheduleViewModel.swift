@@ -39,4 +39,13 @@ final class ScheduleViewModel {
         scheduleItems.accept(current)
         storage.save(current)
     }
+    
+    func updateSchedule(updatedItem: ScheduleModel) {
+        var current = scheduleItems.value
+        if let index = current.firstIndex(where: { $0.id == updatedItem.id }) {
+            current[index] = updatedItem
+            scheduleItems.accept(current)
+            storage.save(current)
+        }
+    }
 }

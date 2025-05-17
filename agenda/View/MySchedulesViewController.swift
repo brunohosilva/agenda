@@ -85,6 +85,7 @@ class MySchedulesViewController: UIViewController, UITableViewDelegate {
             .disposed(by: disposeBag)
         
         viewModel.scheduleItemsObservable
+            .do(onNext: { print("atualizou->", $0) })
             .bind(to: tableView.rx.items(cellIdentifier: "Cell")) { row, scheduleData, cell in
                 cell.textLabel?.text = scheduleData.title
             }
@@ -101,7 +102,7 @@ class MySchedulesViewController: UIViewController, UITableViewDelegate {
     
     private var addButtonBinder: Binder<Void> {
         Binder(self) { target, _ in
-            let addScheduleVC = AddScheduleViewController(viewModel: target.viewModel)
+            let addScheduleVC = AddOrEditScheduleViewController(viewModel: target.viewModel)
             let navigationVC = UINavigationController(rootViewController: addScheduleVC)
             target.present(navigationVC, animated: true)
         }
@@ -109,7 +110,9 @@ class MySchedulesViewController: UIViewController, UITableViewDelegate {
     
     private var detailTapBinder: Binder<ScheduleModel> {
         Binder(self) { target, scheduleData in
-            print("pegar detalhes do item: \(scheduleData)")
+            let editVC = AddOrEditScheduleViewController(viewModel: target.viewModel, editingItem: scheduleData)
+            let navigationVC = UINavigationController(rootViewController: editVC)
+            target.present(navigationVC, animated: true)
         }
     }
     
