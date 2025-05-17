@@ -12,6 +12,12 @@ import RxSwift
 class AddScheduleViewController: UIViewController {
     
     //--------------------------------------------------------
+    // MARK: - Injected Properties
+    //--------------------------------------------------------
+    
+    private let viewModel: ScheduleViewModel
+    
+    //--------------------------------------------------------
     // MARK: - Events
     //--------------------------------------------------------
     
@@ -27,6 +33,19 @@ class AddScheduleViewController: UIViewController {
     private let timeField = UITextField()
     private let saveButton = UIButton()
     private let disposeBag = DisposeBag()
+    
+    //--------------------------------------------------------
+    // MARK: - Initialization
+    //--------------------------------------------------------
+    
+    init(viewModel: ScheduleViewModel) {
+        self.viewModel = viewModel
+        super.init(nibName: nil, bundle: nil)
+    }
+
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -93,7 +112,8 @@ class AddScheduleViewController: UIViewController {
                 date: target.dateField.text ?? "",
                 time: target.timeField.text ?? ""
             )
-            print("Vai salvar --> ", scheduleModel)
+            target.viewModel.addSchedule(item: scheduleModel)
+            target.dismiss(animated: true)
         }
     }
     

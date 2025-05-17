@@ -12,6 +12,10 @@ import SnapKit
 
 class MySchedulesViewController: UIViewController {
     
+    //--------------------------------------------------------
+    // MARK: - UI Properties
+    //--------------------------------------------------------
+    
     private let addButton = UIBarButtonItem(barButtonSystemItem: .add, target: nil, action: nil)
     private let tableView = UITableView()
     private let disposeBag = DisposeBag()
@@ -44,7 +48,7 @@ class MySchedulesViewController: UIViewController {
             .bind(to: addButtonBinder)
             .disposed(by: disposeBag)
         
-        viewModel.scheduleItems
+        viewModel.scheduleItemsObservable
             .bind(to: tableView.rx.items(cellIdentifier: "Cell")) { row, scheduleData, cell in
                 cell.textLabel?.text = scheduleData.title
             }
@@ -63,7 +67,7 @@ class MySchedulesViewController: UIViewController {
     
     private var addButtonBinder: Binder<Void> {
         Binder(self) { target, _ in
-            let addScheduleVC = AddScheduleViewController()
+            let addScheduleVC = AddScheduleViewController(viewModel: target.viewModel)
             let navigationVC = UINavigationController(rootViewController: addScheduleVC)
             target.present(navigationVC, animated: true)
         }
