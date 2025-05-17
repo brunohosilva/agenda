@@ -61,7 +61,6 @@ class AddScheduleViewController: UIViewController {
             view.addSubview($0)
         }
         
-        // Configuração dos campos
         [titleTextField, descriptionTextField, dateField, timeField].forEach {
             $0.borderStyle = .roundedRect
         }
@@ -73,7 +72,6 @@ class AddScheduleViewController: UIViewController {
         saveButton.setTitle("Salvar", for: .normal)
         saveButton.backgroundColor = .systemBlue
         
-        // Layout com SnapKit
         titleTextField.snp.makeConstraints {
             $0.top.equalTo(view.safeAreaLayoutGuide.snp.top).offset(20)
             $0.left.right.equalToSuperview().inset(20)

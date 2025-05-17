@@ -16,6 +16,10 @@ final class ScheduleViewModel {
     var scheduleItemsObservable: Observable<[ScheduleModel]> {
         scheduleItems.asObservable()
     }
+    
+    var currentItems: [ScheduleModel] {
+        return scheduleItems.value
+    }
 
     init() {
         let savedItems = storage.fetch()

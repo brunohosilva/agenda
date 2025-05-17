@@ -10,7 +10,15 @@ import RxSwift
 import RxCocoa
 import SnapKit
 
-class MySchedulesViewController: UIViewController {
+class MySchedulesViewController: UIViewController, UITableViewDelegate {
+    
+    //--------------------------------------------------------
+    // MARK: - Events
+    //--------------------------------------------------------
+    
+    private let detailTapRelay = PublishRelay<ScheduleModel>()
+    private let deleteTapRelay = PublishRelay<ScheduleModel>()
+    private let disposeBag = DisposeBag()
     
     //--------------------------------------------------------
     // MARK: - UI Properties
@@ -18,13 +26,41 @@ class MySchedulesViewController: UIViewController {
     
     private let addButton = UIBarButtonItem(barButtonSystemItem: .add, target: nil, action: nil)
     private let tableView = UITableView()
-    private let disposeBag = DisposeBag()
     private let viewModel = ScheduleViewModel()
     
     override func viewDidLoad() {
         super.viewDidLoad()
         setupUI()
         bind()
+        tableView.delegate = self
+    }
+    
+    //--------------------------------------------------------
+    // MARK: - UITableView
+    //--------------------------------------------------------
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        let schedule = viewModel.currentItems[indexPath.row]
+        detailTapRelay.accept(schedule)
+        tableView.deselectRow(at: indexPath, animated: true)
+    }
+    
+    func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
+        let schedule = viewModel.currentItems[indexPath.row]
+        let detailAction = UIContextualAction(style: .normal, title: "Detalhes") { [weak self] _, _, completion in
+            self?.detailTapRelay.accept(schedule)
+            completion(true)
+        }
+        detailAction.backgroundColor = .systemBlue
+
+        let deleteAction = UIContextualAction(style: .destructive, title: "Apagar") { [weak self] _, _, completion in
+            self?.deleteTapRelay.accept(schedule)
+            completion(true)
+        }
+        
+        let config = UISwipeActionsConfiguration(actions: [deleteAction, detailAction])
+        config.performsFirstActionWithFullSwipe = false
+        return config
     }
     
     private func setupUI() {
@@ -54,15 +90,13 @@ class MySchedulesViewController: UIViewController {
             }
             .disposed(by: disposeBag)
         
-        tableView.rx.modelSelected(ScheduleModel.self)
-            .bind(to: selectedItemBinder)
+        detailTapRelay
+            .bind(to: detailTapBinder)
             .disposed(by: disposeBag)
-    }
-    
-    private var selectedItemBinder: Binder<ScheduleModel> {
-        Binder(self) { target, selected in
-            print("Selecionado: \(selected)")
-        }
+        
+        deleteTapRelay
+            .bind(to: deleteTapBinder)
+            .disposed(by: disposeBag)
     }
     
     private var addButtonBinder: Binder<Void> {
@@ -70,6 +104,18 @@ class MySchedulesViewController: UIViewController {
             let addScheduleVC = AddScheduleViewController(viewModel: target.viewModel)
             let navigationVC = UINavigationController(rootViewController: addScheduleVC)
             target.present(navigationVC, animated: true)
+        }
+    }
+    
+    private var detailTapBinder: Binder<ScheduleModel> {
+        Binder(self) { target, scheduleData in
+            print("pegar detalhes do item: \(scheduleData)")
+        }
+    }
+    
+    private var deleteTapBinder: Binder<ScheduleModel> {
+        Binder(self) { target, scheduleData in
+            print("deletar item: \(scheduleData)")
         }
     }
 }
