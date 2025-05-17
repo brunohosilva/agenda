@@ -1,5 +1,5 @@
 //
-//  ViewController.swift
+//  MySchedulesViewController.swift
 //  agenda
 //
 //  Created by Bruno Oliveira on 17/05/25.
@@ -10,13 +10,12 @@ import RxSwift
 import RxCocoa
 import SnapKit
 
-class ViewController: UIViewController {
+class MySchedulesViewController: UIViewController {
     
     private let addButton = UIBarButtonItem(barButtonSystemItem: .add, target: nil, action: nil)
     private let tableView = UITableView()
     private let disposeBag = DisposeBag()
     private let viewModel = ScheduleViewModel()
-    
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -42,9 +41,7 @@ class ViewController: UIViewController {
     private func bind() {
         
         addButton.rx.tap
-            .bind { [weak self] in
-                print("Botão + clicado via Rx")
-            }
+            .bind(to: addButtonBinder)
             .disposed(by: disposeBag)
         
         viewModel.scheduleItems
@@ -61,6 +58,14 @@ class ViewController: UIViewController {
     private var selectedItemBinder: Binder<ScheduleModel> {
         Binder(self) { target, selected in
             print("Selecionado: \(selected)")
+        }
+    }
+    
+    private var addButtonBinder: Binder<Void> {
+        Binder(self) { target, _ in
+            let addScheduleVC = AddScheduleViewController()
+            let navigationVC = UINavigationController(rootViewController: addScheduleVC)
+            target.present(navigationVC, animated: true)
         }
     }
 }
