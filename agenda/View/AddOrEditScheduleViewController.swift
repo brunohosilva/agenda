@@ -67,9 +67,11 @@ class AddOrEditScheduleViewController: UIViewController {
         view.backgroundColor = .systemBackground
         title = editingItem != nil ? "Editar agendamento" : "Novo agendamento"
         
+        setupTapGesture()
         populateItemIfNeeded()
         setupForm()
         bind()
+
     }
     
     private func populateItemIfNeeded() {
@@ -153,7 +155,7 @@ class AddOrEditScheduleViewController: UIViewController {
     }
     
     private func bind() {
-        
+
         selectHourDoneButton.rx.tap
             .bind(to: selectHourDoneTapped)
             .disposed(by: disposeBag)
@@ -212,4 +214,17 @@ class AddOrEditScheduleViewController: UIViewController {
         }
     }
     
+}
+
+extension AddOrEditScheduleViewController {
+    
+    private func setupTapGesture() {
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
+        tapGesture.cancelsTouchesInView = false
+        view.addGestureRecognizer(tapGesture)
+    }
+    
+    @objc private func dismissKeyboard() {
+        view.endEditing(true)
+    }
 }

@@ -5,11 +5,13 @@
 //  Created by Bruno Oliveira on 17/05/25.
 //
 
+import Foundation
 import RxSwift
 import RxCocoa
 
 final class ScheduleViewModel {
     
+    private let notificationViewModel = NotificationViewModel()
     private let storage = ScheduleStorage()
     private let scheduleItems: BehaviorRelay<[ScheduleModel]>
     
@@ -31,6 +33,19 @@ final class ScheduleViewModel {
         currentItems.append(item)
         scheduleItems.accept(currentItems)
         storage.save(currentItems)
+        
+        if let date = combineDateAndTime(dateString: item.date, timeString: item.time) {
+            notificationViewModel.scheduleNotification(title: item.title, body: item.description, date: date)
+        }
+    }
+    
+    func combineDateAndTime(dateString: String, timeString: String) -> Date? {
+        let formatter = DateFormatter()
+        formatter.locale = Locale(identifier: "pt_BR")
+        formatter.timeZone = TimeZone.current
+        formatter.dateFormat = "dd/MM/yyyy HH:mm"
+        
+        return formatter.date(from: "\(dateString) \(timeString)")
     }
     
     func removeSchedule(item: ScheduleModel) {
