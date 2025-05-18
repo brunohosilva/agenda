@@ -8,6 +8,7 @@
 import UIKit
 import RxRelay
 import RxSwift
+import RxCocoa
 
 class AddOrEditScheduleViewController: UIViewController {
     
@@ -23,6 +24,7 @@ class AddOrEditScheduleViewController: UIViewController {
     //--------------------------------------------------------
     
     let scheduleCreated = PublishRelay<ScheduleModel>()
+    let selectHourDoneTapped = PublishRelay<Void>()
     
     //--------------------------------------------------------
     // MARK: - UI Properties
@@ -32,9 +34,19 @@ class AddOrEditScheduleViewController: UIViewController {
     private let descriptionTextField = UITextField()
     private let datePicker = UIDatePicker()
     private let timeField = UITextField()
+    private let timePicker = UIDatePicker()
+    private let timeFormatter: DateFormatter = {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "HH:mm"
+        formatter.locale = Locale(identifier: "pt_BR")
+        return formatter
+    }()
     private let saveButton = UIButton()
     private let cancelButton = UIButton()
     private let disposeBag = DisposeBag()
+    
+    private let toolbar = UIToolbar()
+    private let selectHourDoneButton = UIBarButtonItem(title: "Concluir", style: .done, target: nil, action: nil)
     
     //--------------------------------------------------------
     // MARK: - Initialization
@@ -86,10 +98,20 @@ class AddOrEditScheduleViewController: UIViewController {
         
         titleTextField.placeholder = "Titulo"
         descriptionTextField.placeholder = "Descrição"
+        
         datePicker.datePickerMode = .date
         datePicker.preferredDatePickerStyle = .inline
         datePicker.locale = Locale(identifier: "pt_BR")
-        timeField.placeholder = "Horário (ex: 10:00)"
+        
+        timePicker.datePickerMode = .time
+        timePicker.locale = Locale(identifier: "pt_BR")
+        timePicker.preferredDatePickerStyle = .wheels
+        
+        toolbar.sizeToFit()
+        toolbar.setItems([selectHourDoneButton], animated: false)
+        
+        timeField.inputView = timePicker
+        timeField.inputAccessoryView = toolbar
         
         saveButton.setTitle("Salvar", for: .normal)
         saveButton.backgroundColor = .systemBlue
@@ -131,6 +153,20 @@ class AddOrEditScheduleViewController: UIViewController {
     }
     
     private func bind() {
+        
+        selectHourDoneButton.rx.tap
+            .bind(to: selectHourDoneTapped)
+            .disposed(by: disposeBag)
+        
+        timePicker.rx.date
+            .map { [timeFormatter]  in timeFormatter.string(from: $0)}
+            .bind(to: timeField.rx.text)
+            .disposed(by: disposeBag)
+        
+        selectHourDoneTapped
+            .bind(to: selectHourDoneTappedBinder)
+            .disposed(by: disposeBag)
+        
         saveButton.rx.tap
             .bind(to: saveButtonBinder)
             .disposed(by: disposeBag)
@@ -141,6 +177,12 @@ class AddOrEditScheduleViewController: UIViewController {
                 self.dismiss(animated: true)
             })
             .disposed(by: disposeBag)
+    }
+    
+    private var selectHourDoneTappedBinder: Binder<Void> {
+        Binder(self) { target, _ in
+            target.timeField.resignFirstResponder()
+        }
     }
     
     private var saveButtonBinder: Binder<Void> {
