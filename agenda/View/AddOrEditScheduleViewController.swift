@@ -30,7 +30,7 @@ class AddOrEditScheduleViewController: UIViewController {
     
     private let titleTextField = UITextField()
     private let descriptionTextField = UITextField()
-    private let dateField = UITextField()
+    private let datePicker = UIDatePicker()
     private let timeField = UITextField()
     private let saveButton = UIButton()
     private let cancelButton = UIButton()
@@ -62,24 +62,33 @@ class AddOrEditScheduleViewController: UIViewController {
     
     private func populateItemIfNeeded() {
         guard let item = editingItem else { return }
+        
         titleTextField.text = item.title
         descriptionTextField.text = item.description
         timeField.text = item.time
-        dateField.text = item.date
+        
+        let formatter = DateFormatter()
+        formatter.dateFormat = "dd/MM/yyyy"
+        
+        if let date = formatter.date(from: item.date) {
+            datePicker.date = date
+        }
     }
     
     private func setupForm() {
-        [titleTextField, descriptionTextField, dateField, timeField, saveButton, cancelButton].forEach {
+        [titleTextField, descriptionTextField, datePicker, timeField, saveButton, cancelButton].forEach {
             view.addSubview($0)
         }
         
-        [titleTextField, descriptionTextField, dateField, timeField].forEach {
+        [titleTextField, descriptionTextField, timeField].forEach {
             $0.borderStyle = .roundedRect
         }
         
         titleTextField.placeholder = "Titulo"
         descriptionTextField.placeholder = "Descrição"
-        dateField.placeholder = "Data (ex: 2025-05-20)"
+        datePicker.datePickerMode = .date
+        datePicker.preferredDatePickerStyle = .inline
+        datePicker.locale = Locale(identifier: "pt_BR")
         timeField.placeholder = "Horário (ex: 10:00)"
         
         saveButton.setTitle("Salvar", for: .normal)
@@ -100,12 +109,12 @@ class AddOrEditScheduleViewController: UIViewController {
             $0.top.equalTo(titleTextField.snp.bottom).offset(12)
             $0.left.right.equalTo(titleTextField)
         }
-        dateField.snp.makeConstraints {
+        datePicker.snp.makeConstraints {
             $0.top.equalTo(descriptionTextField.snp.bottom).offset(12)
             $0.left.right.equalTo(titleTextField)
         }
         timeField.snp.makeConstraints {
-            $0.top.equalTo(dateField.snp.bottom).offset(12)
+            $0.top.equalTo(datePicker.snp.bottom).offset(12)
             $0.left.right.equalTo(titleTextField)
         }
         saveButton.snp.makeConstraints {
@@ -137,11 +146,17 @@ class AddOrEditScheduleViewController: UIViewController {
     private var saveButtonBinder: Binder<Void> {
         Binder(self) { target, _ in
             let id = target.editingItem?.id ?? UUID()
+            
+            let dateFormatter = DateFormatter()
+            dateFormatter.dateFormat = "dd/MM/yyyy"
+
+            let dateString = dateFormatter.string(from: target.datePicker.date)
+            
             let scheduleModel = ScheduleModel(
                 id: id,
                 title: target.titleTextField.text ?? "",
                 description: target.descriptionTextField.text ?? "",
-                date: target.dateField.text ?? "",
+                date: dateString,
                 time: target.timeField.text ?? ""
             )
             
