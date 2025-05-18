@@ -10,7 +10,7 @@ import RxSwift
 import RxCocoa
 import SnapKit
 
-class MySchedulesViewController: UIViewController, UITableViewDelegate {
+class MySchedulesViewController: UIViewController {
     
     //--------------------------------------------------------
     // MARK: - Events
@@ -44,34 +44,6 @@ class MySchedulesViewController: UIViewController, UITableViewDelegate {
         tableView.delegate = self
     }
     
-    //--------------------------------------------------------
-    // MARK: - UITableView
-    //--------------------------------------------------------
-    
-    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        let schedule = viewModel.currentItems[indexPath.row]
-        detailTapRelay.accept(schedule)
-        tableView.deselectRow(at: indexPath, animated: true)
-    }
-    
-    func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
-        let schedule = viewModel.currentItems[indexPath.row]
-        let editAction = UIContextualAction(style: .normal, title: "Editar") { [weak self] _, _, completion in
-            self?.editTapRelay.accept(schedule)
-            completion(true)
-        }
-        editAction.backgroundColor = .systemBlue
-
-        let deleteAction = UIContextualAction(style: .destructive, title: "Apagar") { [weak self] _, _, completion in
-            self?.deleteTapRelay.accept(schedule)
-            completion(true)
-        }
-        
-        let config = UISwipeActionsConfiguration(actions: [deleteAction, editAction])
-        config.performsFirstActionWithFullSwipe = false
-        return config
-    }
-    
     private func setupUI() {
         
         title = "Minha agenda"
@@ -80,7 +52,7 @@ class MySchedulesViewController: UIViewController, UITableViewDelegate {
         view.backgroundColor = .white
         view.addSubview(tableView)
         
-        tableView.register(UITableViewCell.self, forCellReuseIdentifier: "Cell")
+        tableView.register(ScheduleCell.self, forCellReuseIdentifier: "ScheduleCell")
         
         tableView.snp.makeConstraints {
             $0.edges.equalTo(view.safeAreaLayoutGuide)
@@ -128,9 +100,7 @@ class MySchedulesViewController: UIViewController, UITableViewDelegate {
             .disposed(by: disposeBag)
         
         viewModel.scheduleItemsObservable
-            .bind(to: tableView.rx.items(cellIdentifier: "Cell")) { row, scheduleData, cell in
-                cell.textLabel?.text = scheduleData.title
-            }
+            .bind(to: scheduleItemsBinder)
             .disposed(by: disposeBag)
         
         viewModel.scheduleItemsObservable
@@ -149,6 +119,23 @@ class MySchedulesViewController: UIViewController, UITableViewDelegate {
         deleteTapRelay
             .bind(to: deleteTapBinder)
             .disposed(by: disposeBag)
+    }
+    
+    private var scheduleItemsBinder: Binder<[ScheduleModel]> {
+        Binder(self) { target, items in
+            Observable.just(items)
+                .bind(to: target.tableView.rx.items(cellIdentifier: "ScheduleCell", cellType: ScheduleCell.self)) { row, scheduleData, cell in
+                    cell.titleLabel.text = scheduleData.title
+                    cell.dateTimeLabel.text = "\(scheduleData.date) às \(scheduleData.time)"
+                    
+                    if let scheduledDate = target.combinedDate(from: scheduleData) {
+                        target.configureDateTimeLabel(cell.dateTimeLabel, with: scheduledDate)
+                    } else {
+                        cell.dateTimeLabel.textColor = .label
+                    }
+                }
+                .disposed(by: target.disposeBag)
+        }
     }
     
     private var emptyStateBinder: Binder<Bool> {
@@ -186,4 +173,52 @@ class MySchedulesViewController: UIViewController, UITableViewDelegate {
             target.viewModel.removeSchedule(item: scheduleData)
         }
     }
+    
+}
+
+extension MySchedulesViewController: UITableViewDelegate {
+    
+    //--------------------------------------------------------
+    // MARK: - UITableView
+    //--------------------------------------------------------
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        let schedule = viewModel.currentItems[indexPath.row]
+        detailTapRelay.accept(schedule)
+        tableView.deselectRow(at: indexPath, animated: true)
+    }
+    
+    func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
+        let schedule = viewModel.currentItems[indexPath.row]
+        let editAction = UIContextualAction(style: .normal, title: "Editar") { [weak self] _, _, completion in
+            self?.editTapRelay.accept(schedule)
+            completion(true)
+        }
+        editAction.backgroundColor = .systemBlue
+
+        let deleteAction = UIContextualAction(style: .destructive, title: "Apagar") { [weak self] _, _, completion in
+            self?.deleteTapRelay.accept(schedule)
+            completion(true)
+        }
+        
+        let config = UISwipeActionsConfiguration(actions: [deleteAction, editAction])
+        config.performsFirstActionWithFullSwipe = false
+        return config
+    }
+    
+    //--------------------------------------------------------
+    // MARK: - Private functions
+    //--------------------------------------------------------
+    
+    private func combinedDate(from schedule: ScheduleModel) -> Date? {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "dd/MM/yyyy HH:mm"
+        formatter.locale = Locale(identifier: "pt_BR")
+        return formatter.date(from: "\(schedule.date) \(schedule.time)")
+    }
+    
+    private func configureDateTimeLabel(_ label: UILabel, with date: Date) {
+        label.textColor = date < Date() ? .systemRed : .label
+    }
+    
 }

@@ -109,6 +109,13 @@ class AddOrEditScheduleViewController: UIViewController {
             datePicker.date = date
         }
         
+        let timeFormatter = DateFormatter()
+        timeFormatter.dateFormat = "HH:mm"
+        
+        if let timeDate = timeFormatter.date(from: item.time) {
+            timePicker.date = timeDate
+        }
+        
         if let index = alertOptions.firstIndex(where: { $0.1 == item.alertOffsetInMinutes }) {
             alertPicker.selectRow(index, inComponent: 0, animated: false)
             alertValueLabel.text = alertOptions[index].0
@@ -151,8 +158,7 @@ class AddOrEditScheduleViewController: UIViewController {
         
         alertIconLabel.text = "⏰ Alerta"
         alertIconLabel.font = .systemFont(ofSize: 16, weight: .medium)
-        
-        alertValueLabel.text = "Na hora do evento"
+    
         alertValueLabel.textColor = .systemBlue
         alertValueLabel.font = .boldSystemFont(ofSize: 16)
         alertValueLabel.textAlignment = .right
