@@ -35,13 +35,15 @@ class NotificationViewModel {
         }
     }
     
-    func scheduleNotification(title: String, body: String, date: Date) {
+    func scheduleNotification(title: String, body: String, date: Date, offsetInMinutes: Int) {
+        let dateWithOffSet = Calendar.current.date(byAdding: .minute, value: -offsetInMinutes, to: date) ?? date
+        
         let content = UNMutableNotificationContent()
         content.title = title
         content.body = body
         content.sound = .default
         
-        let triggerDate = Calendar.current.dateComponents([.year, .month, .day, .hour, .minute], from: date)
+        let triggerDate = Calendar.current.dateComponents([.year, .month, .day, .hour, .minute], from: dateWithOffSet)
         let trigger = UNCalendarNotificationTrigger(dateMatching: triggerDate, repeats: false)
         let request = UNNotificationRequest(identifier: UUID().uuidString, content: content, trigger: trigger)
         
@@ -50,16 +52,8 @@ class NotificationViewModel {
             if let error = error {
                 print("Erro ao agendar notificação: \(error.localizedDescription)")
             } else {
-                print("Notificação agendada para \(date)")
+                print("Notificação agendada para \(dateWithOffSet)")
             }
         }
-        
-        if date < Date() {
-            print("Data informada está no passado. A notificação não será agendada.")
-            return
-        } else {
-            print("Data está certa vai chegar a notificação")
-        }
-        
     }
 }

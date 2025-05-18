@@ -35,7 +35,12 @@ final class ScheduleViewModel {
         storage.save(currentItems)
         
         if let date = combineDateAndTime(dateString: item.date, timeString: item.time) {
-            notificationViewModel.scheduleNotification(title: item.title, body: item.description, date: date)
+            notificationViewModel.scheduleNotification(
+                title: item.title,
+                body: item.description,
+                date: date,
+                offsetInMinutes: item.alertOffsetInMinutes
+            )
         }
     }
     

@@ -13,4 +13,5 @@ struct ScheduleModel: Codable {
     var description: String
     var date: String
     var time: String
+    var alertOffsetInMinutes: Int
 }
