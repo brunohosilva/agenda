@@ -12,6 +12,9 @@
 		B64C49F92DD8CF8400CF40A9 /* RxSwift in Frameworks */ = {isa = PBXBuildFile; productRef = B64C49F82DD8CF8400CF40A9 /* RxSwift */; };
 		B64C49FB2DD8CF8400CF40A9 /* RxTest in Frameworks */ = {isa = PBXBuildFile; productRef = B64C49FA2DD8CF8400CF40A9 /* RxTest */; };
 		B64C4A052DD8D2AF00CF40A9 /* SnapKit in Frameworks */ = {isa = PBXBuildFile; productRef = B64C4A042DD8D2AF00CF40A9 /* SnapKit */; };
+		B6DF46452DDBC19400071275 /* SnapshotTesting in Frameworks */ = {isa = PBXBuildFile; productRef = B6DF46442DDBC19400071275 /* SnapshotTesting */; };
+		B6DF46482DDBC1C900071275 /* Quick in Frameworks */ = {isa = PBXBuildFile; productRef = B6DF46472DDBC1C900071275 /* Quick */; };
+		B6DF464B2DDBC1E600071275 /* Nimble in Frameworks */ = {isa = PBXBuildFile; productRef = B6DF464A2DDBC1E600071275 /* Nimble */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -84,7 +87,10 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B6DF46482DDBC1C900071275 /* Quick in Frameworks */,
+				B6DF464B2DDBC1E600071275 /* Nimble in Frameworks */,
 				B64C49FB2DD8CF8400CF40A9 /* RxTest in Frameworks */,
+				B6DF46452DDBC19400071275 /* SnapshotTesting in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -166,6 +172,9 @@
 			name = agendaTests;
 			packageProductDependencies = (
 				B64C49FA2DD8CF8400CF40A9 /* RxTest */,
+				B6DF46442DDBC19400071275 /* SnapshotTesting */,
+				B6DF46472DDBC1C900071275 /* Quick */,
+				B6DF464A2DDBC1E600071275 /* Nimble */,
 			);
 			productName = agendaTests;
 			productReference = B64C49BF2DD8CB8600CF40A9 /* agendaTests.xctest */;
@@ -229,6 +238,9 @@
 			packageReferences = (
 				B64C49F32DD8CF8400CF40A9 /* XCRemoteSwiftPackageReference "RxSwift" */,
 				B64C4A032DD8D2AF00CF40A9 /* XCRemoteSwiftPackageReference "SnapKit" */,
+				B6DF46432DDBC19400071275 /* XCRemoteSwiftPackageReference "swift-snapshot-testing" */,
+				B6DF46462DDBC1C900071275 /* XCRemoteSwiftPackageReference "Quick" */,
+				B6DF46492DDBC1E600071275 /* XCRemoteSwiftPackageReference "Nimble" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = B64C49AA2DD8CB8400CF40A9 /* Products */;
@@ -609,6 +621,30 @@
 				minimumVersion = 5.7.1;
 			};
 		};
+		B6DF46432DDBC19400071275 /* XCRemoteSwiftPackageReference "swift-snapshot-testing" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/pointfreeco/swift-snapshot-testing";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.18.3;
+			};
+		};
+		B6DF46462DDBC1C900071275 /* XCRemoteSwiftPackageReference "Quick" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/Quick/Quick";
+			requirement = {
+				branch = main;
+				kind = branch;
+			};
+		};
+		B6DF46492DDBC1E600071275 /* XCRemoteSwiftPackageReference "Nimble" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/Quick/Nimble";
+			requirement = {
+				branch = main;
+				kind = branch;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -636,6 +672,21 @@
 			isa = XCSwiftPackageProductDependency;
 			package = B64C4A032DD8D2AF00CF40A9 /* XCRemoteSwiftPackageReference "SnapKit" */;
 			productName = SnapKit;
+		};
+		B6DF46442DDBC19400071275 /* SnapshotTesting */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = B6DF46432DDBC19400071275 /* XCRemoteSwiftPackageReference "swift-snapshot-testing" */;
+			productName = SnapshotTesting;
+		};
+		B6DF46472DDBC1C900071275 /* Quick */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = B6DF46462DDBC1C900071275 /* XCRemoteSwiftPackageReference "Quick" */;
+			productName = Quick;
+		};
+		B6DF464A2DDBC1E600071275 /* Nimble */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = B6DF46492DDBC1E600071275 /* XCRemoteSwiftPackageReference "Nimble" */;
+			productName = Nimble;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

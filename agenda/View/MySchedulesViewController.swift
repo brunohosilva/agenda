@@ -27,7 +27,6 @@ class MySchedulesViewController: UIViewController, UITableViewDelegate {
     
     private let addButton = UIBarButtonItem(barButtonSystemItem: .add, target: nil, action: nil)
     private let tableView = UITableView()
-    private let viewModel = ScheduleViewModel()
     
     //--------------------------------------------------------
     // MARK: - UI Empty View State
@@ -36,6 +35,17 @@ class MySchedulesViewController: UIViewController, UITableViewDelegate {
     private let emptyStateView = UIView()
     private let emptyLabel = UILabel()
     private let emptyAddButton = UIButton(type: .system)
+    
+    private let viewModel: ScheduleViewModelProtocol
+
+    init(viewModel: ScheduleViewModelProtocol = ScheduleViewModel()) {
+        self.viewModel = viewModel
+        super.init(nibName: nil, bundle: nil)
+    }
+
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()

@@ -9,7 +9,16 @@ import Foundation
 import RxSwift
 import RxCocoa
 
-final class ScheduleViewModel {
+protocol ScheduleViewModelProtocol {
+    var currentItems: [ScheduleModel] { get }
+    var scheduleItemsObservable: Observable<[ScheduleModel]> { get }
+    
+    func removeSchedule(item: ScheduleModel)
+    func addSchedule(item: ScheduleModel)
+    func updateSchedule(updatedItem: ScheduleModel)
+}
+
+final class ScheduleViewModel: ScheduleViewModelProtocol {
     
     private let notificationViewModel = NotificationViewModel()
     private let storage = ScheduleStorage()

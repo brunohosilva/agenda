@@ -17,7 +17,7 @@ class AddOrEditScheduleViewController: UIViewController {
     // MARK: - Injected Properties
     //--------------------------------------------------------
     
-    private let viewModel: ScheduleViewModel
+    private let viewModel: ScheduleViewModelProtocol
     private let editingItem: ScheduleModel?
     
     //--------------------------------------------------------
@@ -75,8 +75,9 @@ class AddOrEditScheduleViewController: UIViewController {
     //--------------------------------------------------------
     // MARK: - Initialization
     //--------------------------------------------------------
-    
-    init(viewModel: ScheduleViewModel, editingItem: ScheduleModel? = nil) {
+
+    init(viewModel: ScheduleViewModelProtocol = ScheduleViewModel(),
+         editingItem: ScheduleModel? = nil) {
         self.viewModel = viewModel
         self.editingItem = editingItem
         super.init(nibName: nil, bundle: nil)
