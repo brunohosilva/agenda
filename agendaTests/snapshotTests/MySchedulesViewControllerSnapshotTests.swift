@@ -5,6 +5,7 @@
 //  Created by Bruno Oliveira on 19/05/25.
 //
 
+import UIKit
 import Quick
 import Nimble
 import SnapshotTesting
@@ -12,8 +13,6 @@ import RxSwift
 import RxRelay
 
 @testable import agenda
-import UIKit
-
 
 class MySchedulesViewControllerSnapshotTests: QuickSpec {
     override class func spec() {

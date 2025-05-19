@@ -64,11 +64,6 @@
 			path = agendaTests;
 			sourceTree = "<group>";
 		};
-		B64C49CC2DD8CB8600CF40A9 /* agendaUITests */ = {
-			isa = PBXFileSystemSynchronizedRootGroup;
-			path = agendaUITests;
-			sourceTree = "<group>";
-		};
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -109,7 +104,6 @@
 			children = (
 				B64C49AB2DD8CB8400CF40A9 /* agenda */,
 				B64C49C22DD8CB8600CF40A9 /* agendaTests */,
-				B64C49CC2DD8CB8600CF40A9 /* agendaUITests */,
 				B64C49AA2DD8CB8400CF40A9 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -192,9 +186,6 @@
 			);
 			dependencies = (
 				B64C49CB2DD8CB8600CF40A9 /* PBXTargetDependency */,
-			);
-			fileSystemSynchronizedGroups = (
-				B64C49CC2DD8CB8600CF40A9 /* agendaUITests */,
 			);
 			name = agendaUITests;
 			packageProductDependencies = (
