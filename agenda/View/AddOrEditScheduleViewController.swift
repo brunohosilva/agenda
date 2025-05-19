@@ -9,6 +9,7 @@ import UIKit
 import RxRelay
 import RxSwift
 import RxCocoa
+import SnapKit
 
 class AddOrEditScheduleViewController: UIViewController {
     
@@ -30,6 +31,9 @@ class AddOrEditScheduleViewController: UIViewController {
     //--------------------------------------------------------
     // MARK: - UI Properties
     //--------------------------------------------------------
+    
+    private let scrollView = UIScrollView()
+    private let contentView = UIView()
     
     private let titleTextField = UITextField()
     private let descriptionTextField = UITextField()
@@ -87,12 +91,27 @@ class AddOrEditScheduleViewController: UIViewController {
         view.backgroundColor = .systemBackground
         title = editingItem != nil ? "Editar agendamento" : "Novo agendamento"
         
+        setupScrolView()
         setupInitialAlertValue()
         setupTapGesture()
         populateItemIfNeeded()
         setupForm()
         bind()
 
+    }
+    
+    private func setupScrolView() {
+        view.addSubview(scrollView)
+        scrollView.snp.makeConstraints {
+            $0.top.equalTo(view.safeAreaLayoutGuide)
+            $0.left.right.bottom.equalToSuperview()
+        }
+        scrollView.addSubview(contentView)
+        contentView.snp.makeConstraints {
+            $0.top.equalTo(scrollView)
+            $0.left.right.bottom.equalToSuperview()
+            $0.width.equalTo(scrollView)
+        }
     }
     
     private func populateItemIfNeeded() {
@@ -125,7 +144,7 @@ class AddOrEditScheduleViewController: UIViewController {
     
     private func setupForm() {
         [titleTextField, descriptionTextField, datePicker, timeField, alertSelectionView, hiddenPickerField, saveButton, cancelButton].forEach {
-            view.addSubview($0)
+            contentView.addSubview($0)
         }
         
         [alertIconLabel, alertValueLabel].forEach {
@@ -191,7 +210,7 @@ class AddOrEditScheduleViewController: UIViewController {
         cancelButton.clipsToBounds = true
         
         titleTextField.snp.makeConstraints {
-            $0.top.equalTo(view.safeAreaLayoutGuide.snp.top).offset(20)
+            $0.top.equalTo(contentView.snp.top).offset(20)
             $0.left.right.equalToSuperview().inset(20)
         }
         descriptionTextField.snp.makeConstraints {
@@ -224,6 +243,7 @@ class AddOrEditScheduleViewController: UIViewController {
             $0.top.equalTo(saveButton.snp.bottom).offset(8)
             $0.leading.trailing.equalTo(saveButton)
             $0.height.equalTo(44)
+            $0.bottom.equalTo(contentView.snp.bottom).offset(-20)
         }
         
         // Layout das labels no card alerta
