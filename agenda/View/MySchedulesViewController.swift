@@ -220,3 +220,23 @@ class MySchedulesViewController: UIViewController, UITableViewDelegate {
     }
 
 }
+
+#if DEBUG
+extension MySchedulesViewController {
+    func testTriggerAddButton() {
+        addButtonBinder.onNext(())
+    }
+
+    func testTriggerDetailTap(_ model: ScheduleModel) {
+        detailTapBinder.onNext(model)
+    }
+
+    func testTriggerEditTap(_ model: ScheduleModel) {
+        editTapBinder.onNext(model)
+    }
+
+    func testTriggerDeleteTap(_ model: ScheduleModel) {
+        deleteTapBinder.onNext(model)
+    }
+}
+#endif

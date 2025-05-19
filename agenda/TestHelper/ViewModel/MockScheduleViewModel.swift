@@ -15,11 +15,14 @@ class MockScheduleViewModel: ScheduleViewModelProtocol {
     var scheduleItemsObservable: Observable<[ScheduleModel]> {
         return itemsRelay.asObservable()
     }
+    var removedItem: ScheduleModel?
     
     func addSchedule(item: agenda.ScheduleModel) {}
     func updateSchedule(updatedItem: agenda.ScheduleModel) {}
     func setItems(_ items: [ScheduleModel]) {
         itemsRelay.accept(items)
     }
-    func removeSchedule(item: ScheduleModel) {}
+    func removeSchedule(item: ScheduleModel) {
+        removedItem = item
+    }
 }
