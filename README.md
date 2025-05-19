@@ -1,5 +1,5 @@
 
-# Projeto Agenda
+# App Agenda
 
 App onde consiste em cadastrar agendamentos via aplicativo, e receber notificações referente ao agendamento 
 
