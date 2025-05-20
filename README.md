@@ -31,11 +31,11 @@ Foi utilizado a arquitetura MVVM (Model-View-ViewModel) para garantir uma melhor
 - ✅ DatePicker de calendário para seleção da data do agendamento
 - ✅ DatePicker de horas para selecionar o horário do agendamento
 - ✅ UIPickerView seleção de item, opção do cliente selecionar com quanto tempo antes ele deseja receber a notificação
+- ✅ Toaster de feedback ao cadastrar, remover ou editar um agendamento
 
 
 ## Funcionalidades pendentes 
 
-- ❌ Toaster de feedback ao cadastrar, remover ou editar um agendamento
 - ❌ Ao editar ou remover um agendamento, refletir na notificação
 
 
