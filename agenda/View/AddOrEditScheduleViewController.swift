@@ -65,8 +65,14 @@ class AddOrEditScheduleViewController: UIViewController {
     private let alertToolbar = UIToolbar()
     private let selectAlertOptionButton = UIBarButtonItem(title: "Selecionar", style: .done, target: nil, action: nil)
     
-    private let saveButton = UIButton()
-    private let cancelButton = UIButton()
+    private let saveButton = ButtonView(
+        title: "Salvar",
+        backgroundColor: .systemBlue
+    )
+    private let cancelButton = ButtonView(
+        title: "Cancelar",
+        backgroundColor: .systemRed
+    )
     private let disposeBag = DisposeBag()
     
     private let toolbar = UIToolbar()
@@ -200,16 +206,6 @@ class AddOrEditScheduleViewController: UIViewController {
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(showAlertPicker))
         alertSelectionView.addGestureRecognizer(tapGesture)
         
-        saveButton.setTitle("Salvar", for: .normal)
-        saveButton.backgroundColor = .systemBlue
-        saveButton.layer.cornerRadius = 10
-        saveButton.clipsToBounds = true
-        
-        cancelButton.setTitle("Cancelar", for: .normal)
-        cancelButton.backgroundColor = .systemRed
-        cancelButton.layer.cornerRadius = 10
-        cancelButton.clipsToBounds = true
-        
         titleTextField.snp.makeConstraints {
             $0.top.equalTo(contentView.snp.top).offset(20)
             $0.left.right.equalToSuperview().inset(20)
@@ -275,11 +271,11 @@ class AddOrEditScheduleViewController: UIViewController {
             .bind(to: timeField.rx.text)
             .disposed(by: disposeBag)
         
-        saveButton.rx.tap
+        saveButton.buttonTap
             .bind(to: saveButtonBinder)
             .disposed(by: disposeBag)
         
-        cancelButton.rx.tap
+        cancelButton.buttonTap
             .subscribe(onNext: { [weak self] _ in
                 guard let self else { return }
                 self.dismiss(animated: true)
