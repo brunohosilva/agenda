@@ -12,7 +12,6 @@ import SnapKit
 
 class ScheduleDetailsDialogViewController: UIViewController {
     
-    
     private let schedule: ScheduleModel
     private let disposeBag = DisposeBag()
     private let closeModalRequested = PublishRelay<Void>()
@@ -117,7 +116,6 @@ class ScheduleDetailsDialogViewController: UIViewController {
             .bind(to: closeModalRequested)
             .disposed(by: disposeBag)
     }
-    
     
     private var closeModalRequestedBinder: Binder<Void> {
         Binder(self) { target, _ in

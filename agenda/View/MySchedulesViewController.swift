@@ -10,6 +10,11 @@ import RxSwift
 import RxCocoa
 import SnapKit
 
+enum SaveType {
+    case newSave
+    case editSave
+}
+
 class MySchedulesViewController: UIViewController, UITableViewDelegate {
     
     //--------------------------------------------------------
@@ -20,6 +25,8 @@ class MySchedulesViewController: UIViewController, UITableViewDelegate {
     private let editTapRelay = PublishRelay<ScheduleModel>()
     private let deleteTapRelay = PublishRelay<ScheduleModel>()
     private let disposeBag = DisposeBag()
+    
+    let saveTypeRelay = PublishRelay<SaveType>()
     
     //--------------------------------------------------------
     // MARK: - UI Properties
@@ -170,6 +177,27 @@ class MySchedulesViewController: UIViewController, UITableViewDelegate {
         deleteTapRelay
             .bind(to: deleteTapBinder)
             .disposed(by: disposeBag)
+        
+        saveTypeRelay
+            .bind(to: saveTypeBinder)
+            .disposed(by: disposeBag)
+    }
+    
+    private var saveTypeBinder: Binder<SaveType> {
+        Binder(self) { target, saveType in
+            switch saveType {
+            case .editSave:
+                ToasterView.show(in: self.view, title: "✏️", description: "Agendamento editado com sucesso!")
+            case .newSave:
+                ToasterView.show(in: self.view, title: "💾", description: "Agendamento salvo com sucesso!")
+            }
+        }
+    }
+    
+    private var savedScheduleBinder: Binder<Void> {
+        Binder(self) { target, _ in
+            ToasterView.show(in: self.view, title: "✏️", description: "Agendamento editado com sucesso!")
+        }
     }
     
     private var emptyStateBinder: Binder<Bool> {
@@ -190,6 +218,11 @@ class MySchedulesViewController: UIViewController, UITableViewDelegate {
         Binder(self) { target, _ in
             let addScheduleVC = AddOrEditScheduleViewController(viewModel: target.viewModel)
             let navigationVC = UINavigationController(rootViewController: addScheduleVC)
+            
+            addScheduleVC.saveTypeRelay
+                .bind(to: target.saveTypeBinder)
+                .disposed(by: target.disposeBag)
+            
             target.present(navigationVC, animated: true)
         }
     }
@@ -198,6 +231,11 @@ class MySchedulesViewController: UIViewController, UITableViewDelegate {
         Binder(self) { target, scheduleData in
             let editVC = AddOrEditScheduleViewController(viewModel: target.viewModel, editingItem: scheduleData)
             let navigationVC = UINavigationController(rootViewController: editVC)
+            
+            editVC.saveTypeRelay
+                .bind(to: target.saveTypeBinder)
+                .disposed(by: target.disposeBag)
+            
             target.present(navigationVC, animated: true)
         }
     }
@@ -205,6 +243,7 @@ class MySchedulesViewController: UIViewController, UITableViewDelegate {
     private var deleteTapBinder: Binder<ScheduleModel> {
         Binder(self) { target, scheduleData in
             target.viewModel.removeSchedule(item: scheduleData)
+            ToasterView.show(in: self.view, title: "🗑️", description: "Agendamento excluído com sucesso!")
         }
     }
     

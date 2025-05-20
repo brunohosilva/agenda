@@ -27,6 +27,7 @@ class AddOrEditScheduleViewController: UIViewController {
     let scheduleCreated = PublishRelay<ScheduleModel>()
     let selectHourDoneTapped = PublishRelay<Void>()
     let selectedAlertOffsetRelay = BehaviorRelay<Int>(value: 0)
+    let saveTypeRelay = PublishRelay<SaveType>()
     
     //--------------------------------------------------------
     // MARK: - UI Properties
@@ -221,8 +222,10 @@ class AddOrEditScheduleViewController: UIViewController {
             
             if target.editingItem != nil {
                 target.viewModel.updateSchedule(updatedItem: scheduleModel)
+                target.saveTypeRelay.accept(.editSave)
             } else {
                 target.viewModel.addSchedule(item: scheduleModel)
+                target.saveTypeRelay.accept(.newSave)
             }
             
             target.dismiss(animated: true)
