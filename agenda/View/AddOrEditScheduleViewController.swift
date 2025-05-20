@@ -40,19 +40,12 @@ class AddOrEditScheduleViewController: UIViewController {
     private let datePicker = UIDatePicker()
     private let timeField = UITextField()
     private let timePicker = UIDatePicker()
-    private let timeFormatter: DateFormatter = {
-        let formatter = DateFormatter()
-        formatter.dateFormat = "HH:mm"
-        formatter.locale = Locale(identifier: "pt_BR")
-        return formatter
-    }()
     
-    // --- Aqui substituímos o alertPickerField visível por uma UIView que será o card ---
     private let alertSelectionView = UIView()
     private let alertIconLabel = UILabel()
     private let alertValueLabel = UILabel()
         
-    private let hiddenPickerField = UITextField() // Campo oculto para mostrar picker
+    private let hiddenPickerField = UITextField()
     
     private let alertPicker = UIPickerView()
     private let alertOptions = [
@@ -128,17 +121,11 @@ class AddOrEditScheduleViewController: UIViewController {
         descriptionTextField.text = item.description
         timeField.text = item.time
         
-        let formatter = DateFormatter()
-        formatter.dateFormat = "dd/MM/yyyy"
-        
-        if let date = formatter.date(from: item.date) {
+        if let date = formatToDate(dateFormat: "dd/MM/yyyy", dateString: item.date) {
             datePicker.date = date
         }
         
-        let timeFormatter = DateFormatter()
-        timeFormatter.dateFormat = "HH:mm"
-        
-        if let timeDate = timeFormatter.date(from: item.time) {
+        if let timeDate = formatToDate(dateFormat: "HH:mm", dateString: item.time) {
             timePicker.date = timeDate
         }
         
@@ -201,10 +188,6 @@ class AddOrEditScheduleViewController: UIViewController {
         
         alertToolbar.sizeToFit()
         alertToolbar.setItems([selectAlertOptionButton], animated: false)
-    
-        // Gesture para abrir picker ao tocar no card alerta
-        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(showAlertPicker))
-        alertSelectionView.addGestureRecognizer(tapGesture)
         
         titleTextField.snp.makeConstraints {
             $0.top.equalTo(contentView.snp.top).offset(20)
@@ -243,7 +226,6 @@ class AddOrEditScheduleViewController: UIViewController {
             $0.bottom.equalTo(contentView.snp.bottom).offset(-20)
         }
         
-        // Layout das labels no card alerta
         alertIconLabel.snp.makeConstraints {
             $0.centerY.equalToSuperview()
             $0.left.equalToSuperview().inset(12)
@@ -267,7 +249,7 @@ class AddOrEditScheduleViewController: UIViewController {
             .disposed(by: disposeBag)
         
         timePicker.rx.date
-            .map { [timeFormatter]  in timeFormatter.string(from: $0)}
+            .map { [weak self] in self?.formatToDateString(dateFormat: "HH:mm", date: $0) ?? "" }
             .bind(to: timeField.rx.text)
             .disposed(by: disposeBag)
         
@@ -344,6 +326,20 @@ extension AddOrEditScheduleViewController: UIPickerViewDelegate, UIPickerViewDat
 
 extension AddOrEditScheduleViewController {
     
+    private func formatToDate(dateFormat: String, dateString: String) -> Date? {
+        let formatter = DateFormatter()
+        formatter.dateFormat = dateFormat
+        formatter.locale = Locale(identifier: "pt_BR")
+        return formatter.date(from: dateString)
+    }
+    
+    private func formatToDateString(dateFormat: String, date: Date) -> String? {
+        let formatter = DateFormatter()
+        formatter.dateFormat = dateFormat
+        formatter.locale = Locale(identifier: "pt_BR")
+        return formatter.string(from: date)
+    }
+    
     private func setupInitialAlertValue() {
         if editingItem == nil {
             alertPicker.selectRow(0, inComponent: 0, animated: false)
@@ -356,6 +352,9 @@ extension AddOrEditScheduleViewController {
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
         tapGesture.cancelsTouchesInView = false
         view.addGestureRecognizer(tapGesture)
+        
+        let alertTapGesture = UITapGestureRecognizer(target: self, action: #selector(showAlertPicker))
+        alertSelectionView.addGestureRecognizer(alertTapGesture)
     }
     
     @objc private func dismissKeyboard() {
