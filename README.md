@@ -33,9 +33,15 @@ Foi utilizado a arquitetura MVVM (Model-View-ViewModel) para garantir uma melhor
 - ✅ UIPickerView seleção de item, opção do cliente selecionar com quanto tempo antes ele deseja receber a notificação
 - ✅ Toaster de feedback ao cadastrar, remover ou editar um agendamento
 
-
 ## Funcionalidades pendentes 
 
+- ❌ Exibir dias restantes em cada agendamento
+- ❌ Ordenação da lista por data mais próxima
 - ❌ Ao editar ou remover um agendamento, refletir na notificação
+
+## Demonstração
+
+https://github.com/user-attachments/assets/3b6ea1e9-c2ca-4860-809c-b027db0eb715
+
 
 
